@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
@@ -21,6 +25,16 @@ export class UserService {
   }
 
   async findOne(email: string, select?: string) {
-    return await this.userModel.findOne({ email }, select);
+    const user = await this.userModel.findOne({ email }, select);
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
+  async addToFavorite(id, productId) {
+    const user = await this.userModel.updateOne(id, {
+      //@ts-ignore
+      $push: { favorite: productId },
+    });
+    return user;
   }
 }

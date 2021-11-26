@@ -6,6 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CategoryService } from 'src/category/category.service';
+import { UserService } from 'src/user/user.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Product, ProductDocument } from './schema/product.schema';
 
@@ -13,6 +14,7 @@ import { Product, ProductDocument } from './schema/product.schema';
 export class ProductsService {
   constructor(
     private readonly categoryService: CategoryService,
+    private readonly userService: UserService,
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
   ) {}
 
@@ -26,5 +28,17 @@ export class ProductsService {
     } catch (e) {
       throw new ConflictException('There is a product with the name');
     }
+  }
+
+  getAll() {
+    return this.productModel.find({});
+  }
+
+  getByType(type: string) {
+    return this.productModel.find({ type });
+  }
+
+  async addToFavorite(userId, productId) {
+    return await this.userService.addToFavorite(userId, productId);
   }
 }

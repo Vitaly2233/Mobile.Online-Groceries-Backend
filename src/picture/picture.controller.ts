@@ -10,12 +10,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UploadPictureDto } from './dto/upload-picture.dto';
 import { PictureService } from './picture.service';
 
 @Controller('picture')
-@UseGuards(JwtAuthGuard)
 export class PictureController {
   constructor(private pictureService: PictureService) {}
 
@@ -29,7 +27,8 @@ export class PictureController {
   }
 
   @Get(':id')
-  getOne(@Param('id') id, @Res() res) {
-    return this.pictureService.getPicture(id, res);
+  getOne(@Param('id') id) {
+    const picture = this.pictureService.getPicture(id);
+    return picture;
   }
 }

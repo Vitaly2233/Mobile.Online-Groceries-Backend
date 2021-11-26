@@ -3,6 +3,7 @@ import {
   createReadStream,
   existsSync,
   mkdirSync,
+  readFileSync,
   write,
   writeFileSync,
 } from 'fs';
@@ -21,9 +22,9 @@ export class PictureService {
     writeFileSync(path, buffer);
   }
 
-  getPicture(id: string, res) {
+  getPicture(id: string) {
     const file = `${__dirname}/../../upload/${id}.png`;
-    var filestream = createReadStream(file);
-    filestream.pipe(res);
+
+    return readFileSync(file, { encoding: 'base64' });
   }
 }
